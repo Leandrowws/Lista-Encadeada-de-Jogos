@@ -119,7 +119,7 @@ void salvarEmArquivo(Lista lista) {
     int i = 1;
 
     while(jogo) {
-        fprintf(arquivo,"%d;%s;%.2f;%d;%d;%d\n", i, jogo->nome, jogo->nota, jogo->jogabilidade, jogo->historia, jogo->arte);
+        fprintf(arquivo,"%d - %s - %.2f (%d;%d;%d)\n", i, jogo->nome, jogo->nota, jogo->jogabilidade, jogo->historia, jogo->arte);
         jogo = jogo->proximo;
         i++;
     }
@@ -140,7 +140,7 @@ void lerDoArquivo(Lista *lista) {
     float nota;
     int indice;
 
-    while (fscanf(arquivo, "%d;%24[^;];%f;%d;%d;%d", &indice, nome, &nota, &jogabilidade, &historia, &arte) == 6) {
+    while (fscanf(arquivo, "%d - %24[^-] - %f (%d;%d;%d)", &indice, nome, &nota, &jogabilidade, &historia, &arte) == 6) {
         inserirOrdenado(lista, jogabilidade, arte, historia, nome);
     }
 
@@ -151,23 +151,20 @@ int main()
 {
     Lista lista;
     novaLista(&lista);
-
+    lerDoArquivo(&lista);
+    
     int sel;
 
     do {
-        printf("\n1 - Ler arquivo\n2 - Imprimir\n3 - Salvar em Arquivo\n4 - Inserir novo jogo\n0 - Sair\n");
+        printf("\n1 - Inserir novo jogo\n2 - Imprimir\n0 - Sair\n");
         scanf("%d", &sel);
         getchar();
-
-        if(sel == 1)
-            lerDoArquivo(&lista);
+        if(sel == 1) {
+            novoJogo(&lista);
+            salvarEmArquivo(lista);
+        } 
         else if(sel == 2)
             imprimir(lista);
-        else if(sel == 3)
-            salvarEmArquivo(lista);
-        else if(sel == 4)
-            novoJogo(&lista);
-
     } while(sel != 0);
 
     return 0;
